@@ -1,0 +1,60 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/MacPorts 2015_9)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: paper.aux
+The style file: abbrvnat.bst
+Database file #1: ref.bib
+Warning--empty year in Farrington:2010
+Warning--empty year in Farrington:2010
+Warning--empty year in gurobi
+Warning--empty year in Halperin:2011
+Warning--empty year in Halperin:2011
+Warning--empty year in Kandula:2009
+Warning--empty year in Kandula:2009
+Warning--empty year in Porter:2013
+Warning--empty year in Porter:2013
+Warning--empty year in Wang:2010
+Warning--empty year in Wang:2010
+Warning--empty year in Zhou:2012
+Warning--empty year in Zhou:2012
+You've used 10 entries,
+            2773 wiz_defined-function locations,
+            642 strings with 6742 characters,
+and the built_in function-call counts, 6437 in all, are:
+= -- 451
+> -- 658
+< -- 1
++ -- 220
+- -- 210
+* -- 600
+:= -- 1029
+add.period$ -- 30
+call.type$ -- 10
+change.case$ -- 100
+chr.to.int$ -- 10
+cite$ -- 33
+duplicate$ -- 231
+empty$ -- 402
+format.name$ -- 220
+if$ -- 1282
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 9
+newline$ -- 58
+num.names$ -- 40
+pop$ -- 272
+preamble$ -- 1
+purify$ -- 90
+quote$ -- 0
+skip$ -- 166
+stack$ -- 0
+substring$ -- 20
+swap$ -- 19
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 110
+warning$ -- 13
+while$ -- 30
+width$ -- 0
+write$ -- 120
+(There were 13 warnings)
