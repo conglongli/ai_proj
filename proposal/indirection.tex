@@ -1,0 +1,175 @@
+\section{Introduction}
+
+Traditionally, circuit switching and packet switching have been
+considered as alternative design choices, each with their own advantages
+and disadvantages. Packet switches are efficient at multiplexing traffic
+across a large number of ports, while circuit switches can often service
+higher line rates in a more cost-effective manner, especially when
+combined with optical links. However, as optical circuit switching
+technology advances, the reconfiguration time (i.e., the amount of time
+it takes to alter the input-to-output mapping) is swiftly decreasing,
+thus increasingly blurring the division between the packet and circuit
+regimes.
+
+Indeed, a range of new datacenter switch designs take advantage of this
+trend, and propose to schedule appropriately large traffic demands via a
+high-bandwidth circuit switch and handle any remaining traffic with a
+slower packet switch. However, all recent proposals for such hybrid
+designs presume the existence of an omniscient scheduling oracle that
+can compute switch configurations and map traffic to them in an optimal
+fashion. Recently, Liu \textit{et al.\ }~\cite{Liu:2015} proposed a
+hybrid switch scheduling algorithm, Solstice, that is both
+highly effective at scheduling datacenter-like traffic workloads and has
+practical computational overheads.
+
+In this project, we improved the Solstice scheduling algorithm by
+introducing an indirection technique that reduces the number of
+configurations needed for scheduling. This proposed technique
+aims to redirect traffic through underutilized links. Using this technique,
+traffic demand can be served by pairs of existing links, utilizing
+multi-hop routes to increase usage of underutilized links.
+This technique is evaluated in simulation as well as compared with ILP
+formulations for switch configurations.
+
+The rest of this proposal is organized as follows.
+Section~\ref{sec:related} discusses Solstice and other related work.
+Section~\ref{sec:indirection} describes the proposed indirection
+technique. Finally, Section~\ref{sec:goal} describes the proposed evaluation plan
+and goals.
+
+\section{Related Work}
+\label{sec:related}
+Recently, researchers have proposed hybrid datacenter network architectures
+that offer higher throughputs at lower cost by combining switching
+technologies. In particular, recent proposals suggest employing
+highspeed optical~\cite{Chen:2012, Farrington:2010, Wang:2010} or
+wireless~\cite{Halperin:2011, Kandula:2009, Zhou:2012} networks
+configured to service the heavy flows, while passing the remainder of
+the traffic through a traditional, relatively underprovisioned
+packet-switched network. 
+
+As technology trends usher in dramatically faster reconfiguration times,
+the distinction between packet and circuit is blurred, and ever smaller
+flows can take advantage of a hybrid fabric. This trend will soon allow
+servicing the bulk of the traffic through a rapidly reconfigurable
+optical switch~\cite{Porter:2013}, leaving a relatively minor portion to
+be serviced by the packet network~\cite{Liu:2014}. While the potential
+cost savings that hybrid technologies could realize is large, the design
+space for scheduling resources in the hybrid regime is not yet well
+understood. What range of traffic demands can be scheduled for a given
+switch design and how can this schedule be computed efficiently? These
+questions are not addressed by the existing switch scheduling literature.
+
+Many of the classical approaches to scheduling for switches with
+non-trivial reconfiguration delays divide the offered demand into two
+parts: an initial, heavy-weight component that is served by O(N) highly
+utilized configurations with significant durations, and a second,
+residual component that is serviced by a similar number of short,
+under-utilized schedules. The recent Solstice scheduling algorithm~\cite{Liu:2015}
+exploits the skewed nature of datacenter traffic
+patterns to create a small number of configurations with long durations
+that minimize the penalty for reconfiguration and leave only a small
+amount of residual demand to be serviced by a low-speed (and lowcost)
+unconstrained packet switch.
+
+\section{Scheduling Without Indirection}
+\label{sec:noindirection}
+Solstice introduces a method of calculating a schedule for the circuit switch
+and determine what data to send to the packet switch in order to satisfy all
+demand while maximizing utilization.
+
+\subsection{Notation}
+The switch in use is a \textbf{hybrid switch} composed of
+a circuit switch and a packet switch. The circuit switch has
+a link rate of $r_c$ bits/second with a reconfiguration time of $\delta$.
+The packet switch has a link rate of $r_p \ll r_c$, bits/second.
+
+\textbf{Demand} is the amount of data that must be sent between any two ports.
+It is expressed as a matrix $D$ of size $n \times n$,
+where rows are sources and columns are destinations.
+The amount of demand from port $a$ to port $b$ is $D_{a, b} \in \mathbf{R}^{+}_0$
+
+A \textbf{Schedule} is a set of configurations $\{P_1, P_2, \dots, P_m\}$, durations
+$\{t_1, t_2, \dots, t_m\}$, and packet switch utilization matrices ${E_1, E_2, \dots, E_m}$.
+$P_{i_{a, b}}$ is an $n \times n$ binary matrix, where $P_{i_{a, b}} = 1$ indicates that
+port $a$ can second to port $b$ when the switch is using the configuration $P_i$.
+Each row and each column in $P_i$ has exactly one 1.
+For each configuration there is an associated set of data $E_i$ to be sent via the
+packet switch during that configuration.
+$E_{i_{a, b}} = k$ means $k$ bits are sent from $a$ to $b$ through the packet switch instead
+of the circuit switch during configuration $i$.
+
+
+\subsection{Considerations}
+We seek to minimize transmission time, which is equivalent to maximizing utilization.
+Additionally, we wish to fully schedule existing demand before scheduling
+new demand to prevent starvation.
+
+We define {\it total time} to be the amount of time scheduled
+on the circuit switch plus the amount of time spent switching.
+\[T = \left(\sum_{i=1}^{m} t_i\right) + m\delta.\]
+
+In the hybrid switch, the packet switch can only be utilized during times when
+the packet switch is utilized. Thus, all outbound links $i$ can admit the following
+amount of data:
+\[\sum_{j=1}^{m} E_{i,j} \quad\leq\quad r_p T.\]
+Inbound links are similarly constrained.
+
+Demand is satisfied when the total data served by the hybrid switch is at least
+as large as the demand:
+\[E + \sum_{i=1}^{m} r_c t_i P_i \quad\geq\quad D.\]
+
+We formulate this problem as an ILP, shown in figure~\ref{fig:hybrid-optimization}.
+
+\begin{figure}[t]
+\small
+\centering
+\begin{mdframed}
+\[
+\min \left(\sum_{i=1}^{n!} t_i\right) + m\delta
+\]
+\begin{tabbing}
+\textbf{subject to:}\\[4pt]
+1) $E + \sum_{i=1}^{n!} r_c t_i P_i \geq D$\\[4pt]
+2) $\forall i: \sum_{j=1}^{n} E_{i,j} \leq r_p T$\\[4pt]
+3) $\forall j: \sum_{i=1}^{n} E_{i,j} \leq r_p T$\\[4pt]
+4) $\forall i: t_i \leq \textit{max}(D) l_i$
+%5) $\forall i: t_i \geq l_i$
+\end{tabbing}
+\end{mdframed}
+\caption{An ILP to find optimal schedules for a hybrid switch.}
+\label{fig:hybrid-optimization}
+\end{figure}
+
+\section{The Indirection Technique}
+\label{sec:indirection}
+We improved the Solstice scheduling
+algorithm by introducing a indirection technique that reduces the number
+of configurations needed for the scheduling. Originally, Solstice
+schedules each traffic demand by a direct path, which means that a new
+configuration is required to fulfill a demand that has different sources
+or destinations. Our technique schedules part of demand traffic
+indirectly. For example, port a has 5 demand to port b and 20
+demand to port c; port c has 20 demand to port b. Solstice will require
+3 configurations for these demands. However, we could let port a send
+all 25 demand to port c and let port c send 25 demand to port b. In this
+way we reduce one configuration time, which is nontrivial for optical
+switches. 
+
+\section{Evaluation}
+\label{sec:goal}
+First, evaluated our indirection technique by integer
+linear programming (ILP) formulations. In the paper, Liu \textit{et al.\ }~\cite{Liu:2015}
+provided a ILP formulation of the scheduling problem without indirection
+considerations. We built a new formulation adding indirection to Liu's formulation.
+Then used Gurobi~\cite{gurobi}
+ILP solver to solve scheduling problems with the two formulations in order
+to find the optimal improvement by indirection.
+
+Then we evaluated our indirection techinque in simulation. We received the
+simulator of the Solstice algorithm from the authors, and introduced
+our techinque into the simulator to compare it with the original algorithm.
+
+%The simulation results will be comparable in terms of number of configurations,
+%and the total time to serve all demands.
+
