@@ -156,6 +156,40 @@ all 25 demand to port c and let port c send 25 demand to port b. In this
 way we reduce one configuration time, which is nontrivial for optical
 switches. 
 
+We introduce a three-dimensional {\it indirection matrix} to represent all possible one-hop
+indirections, and use it to extend the original ILP to support indirection. Indirection matrix
+$I$ has an entry $I_{a,b,c} = v$, where $v$ is the amount of traffic sent indirectly to $c$ from $a$
+through $b$. The amount of traffic sent directly and indirectly over any link must be less than
+the capacity of the link.
+
+
+The updated ILP including indirection is shown in figure~\ref{fig:hybrid-indirection}.
+
+
+\begin{figure}[t]
+\small
+\centering
+\begin{mdframed}
+\[
+\min \left(\sum_{i=1}^{n!} t_i\right) + m\delta
+\]
+\begin{tabbing}
+\textbf{subject to:}\\[4pt]
+1)  $\forall a, b: (D_{a,b} - (\Sigma_{c}{n} I_{a,c,b}) - H_{a,b})
+    + (\Sigma_{c}{n} I_{a,b,c} + I_{c,a,b})
+    <= (\Sigma_{i}{o} t_i * P_{i_{a,b}})$ \\[4pt]
+2) $E + \sum_{i=1}^{n!} r_c t_i P_i \geq D$\\[4pt]
+3) $\forall i: \sum_{j=1}^{n} E_{i,j} \leq r_p T$\\[4pt]
+4) $\forall j: \sum_{i=1}^{n} E_{i,j} \leq r_p T$\\[4pt]
+5) $\forall i: t_i \leq \textit{max}(D) l_i$
+%5) $\forall i: t_i \geq l_i$
+\end{tabbing}
+\end{mdframed}
+\caption{Modified ILP for Indirection}
+\label{fig:hybrid-indirection}
+\end{figure}
+
+
 \section{Evaluation}
 \label{sec:goal}
 First, evaluated our indirection technique by integer
