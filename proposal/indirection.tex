@@ -33,11 +33,11 @@ formulations and simulations. Results show that indirection techique could
 reduce total time required to serve 100\% demand by reducing the number
 of configurations needed for scheduling.
 
-The rest of this proposal is organized as follows.
+This paper is organized as follows.
 Section~\ref{sec:related} discusses Solstice and other related work.
 Section~\ref{sec:noindirection} describes the ILP formulation without
 indirection technique.
-Section~\ref{sec:indirection} describes the proposed indirection
+Section~\ref{sec:indirection} describes the indirection
 technique and its ILP formulation. Section~\ref{sec:goal} presents the
 evaluation results. Finally, Section~\ref{sec:conclu} summarizes our conclusions.
 
@@ -169,6 +169,8 @@ the capacity of the link.
 
 The updated ILP including indirection is shown in figure~\ref{fig:hybrid-indirection}.
 
+We implemented this formulation using the Gurobi ILP solver.
+
 
 \begin{figure}[t]
 \small
@@ -192,7 +194,4 @@ The updated ILP including indirection is shown in figure~\ref{fig:hybrid-indirec
 \caption{Modified ILP for Indirection}
 \label{fig:hybrid-indirection}
 \end{figure}
-
-
-
 

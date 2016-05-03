@@ -18,4 +18,21 @@ our techinque into the simulator to compare it with the original algorithm.
 \section{Conclusion}
 \label{sec:conclu}
 
-Conclusion here.
+Recent advances in optical switch technology has created a need for new scheduling
+algorithms which take advantage of shorter reconfiguration times while maintaining
+reasonable computational overheads. The recent Solstice scheduling algorithm
+accomplishes these goals, but does not achieve optimal utilization due to the
+fact that it only supports traffic sent over a direct link.
+It is possible to meet traffic demands without utilizing a direct link between
+each source and destination port by routing traffic over multiple links.
+Utilizing these indirect links can reduce the number of reconfigurations necessary
+and reduce the amount of unused bandwidth on each link.
+
+In this paper, we have presented an extension to the Solstice packet scheduler allowing for
+multi-hop indirect serving of traffic. Through comparison with the original
+algorithm in simulation, we have demonstrated that
+this indirection technique reduces the number of reconfigurations necessary to serve
+all traffic demand by increasing the utilization of each link. 
+Our evaluation shows that the indirection technique does not have prohibitively high
+computational overhead, and decreases the total amount of time necessary to fulfill
+all traffic demands. 
