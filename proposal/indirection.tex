@@ -28,14 +28,18 @@ configurations needed for scheduling. This proposed technique
 aims to redirect traffic through underutilized links. Using this technique,
 traffic demand can be served by pairs of existing links, utilizing
 multi-hop routes to increase usage of underutilized links.
-This technique is evaluated in simulation as well as compared with ILP
-formulations for switch configurations.
+We evaluated this technique by both integer linear programming (ILP)
+formulations and simulations. Results show that indirection techique could
+reduce total time required to serve 100\% demand by reducing the number
+of configurations needed for scheduling.
 
 The rest of this proposal is organized as follows.
 Section~\ref{sec:related} discusses Solstice and other related work.
+Section~\ref{sec:noindirection} describes the ILP formulation without
+indirection technique.
 Section~\ref{sec:indirection} describes the proposed indirection
-technique. Finally, Section~\ref{sec:goal} describes the proposed evaluation plan
-and goals.
+technique and its ILP formulation. Section~\ref{sec:goal} presents the
+evaluation results. Finally, Section~\ref{sec:conclu} summarizes our conclusions.
 
 \section{Related Work}
 \label{sec:related}
@@ -190,20 +194,5 @@ The updated ILP including indirection is shown in figure~\ref{fig:hybrid-indirec
 \end{figure}
 
 
-\section{Evaluation}
-\label{sec:goal}
-First, evaluated our indirection technique by integer
-linear programming (ILP) formulations. In the paper, Liu \textit{et al.\ }~\cite{Liu:2015}
-provided a ILP formulation of the scheduling problem without indirection
-considerations. We built a new formulation adding indirection to Liu's formulation.
-Then used Gurobi~\cite{gurobi}
-ILP solver to solve scheduling problems with the two formulations in order
-to find the optimal improvement by indirection.
 
-Then we evaluated our indirection techinque in simulation. We received the
-simulator of the Solstice algorithm from the authors, and introduced
-our techinque into the simulator to compare it with the original algorithm.
-
-%The simulation results will be comparable in terms of number of configurations,
-%and the total time to serve all demands.
 
